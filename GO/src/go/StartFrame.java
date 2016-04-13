@@ -1,4 +1,9 @@
 package go;
+/*
+ * This class is a JFrame includes the main,
+ * All JButtons, JPanel, JMeunBar and some other things can be add here
+ */
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,7 +44,7 @@ public class StartFrame extends JFrame {
         
       toolbar=new JPanel();
       toolbar.setBackground(new Color(88,161,176));
-      startButton=new JButton("START");  
+      startButton=new JButton("CLEAR BOARD");  
       startButton.addActionListener(new ActionListener(){
     	  public void actionPerformed(ActionEvent e) {
     		  goBoard.getBoard().clear();
