@@ -2,24 +2,34 @@ package go;
 /*
  * This class is to make the group of stones
  * Every same color stone linked directly should be in same group
+ *@author: Zhiyuan Chen
+ *@author: Yudi Dong
  */
 import java.awt.Color;
 import java.util.ArrayList;
 
 public class Group {
-	private ArrayList<One> stones=new ArrayList<>();
+	private ArrayList<One> stones;
 	private Color c;
-	
+	public int GroupNum;
 	public Group(){
-		
+
 	}
+	public int getGroupNum(){
+		return GroupNum;
+	}
+	public Group(One stone){
 	
-	public Group(One stone) {
+		stones=new ArrayList<>();
 		stones.add(stone);
 	}
 	public int size(){
 		return getStones().size();
 	}
+	public void setGroupNum(int GroupNum){
+		this.GroupNum=GroupNum;
+	}
+	
 	
 	public One get(int num){
 		return getStones().get(num);
@@ -43,7 +53,7 @@ public class Group {
 	}
 	public void mergeTwoGroup(Group g){
 		for(int i=0;i<g.size();i++){
-			this.addStone(g.get(i));
+			addStone(g.get(i));
 		}
 	}
 	

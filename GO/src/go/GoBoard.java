@@ -2,6 +2,9 @@ package go;
 /*
  * This class is to build a JPanel to show the background
  * A go game board
+ *@author: Zhiyuan Chen
+ *@author: Yudi Dong
+ *
  */
 import java.awt.*;
 import java.awt.event.*;
@@ -42,13 +45,13 @@ public class GoBoard extends JPanel{
 			                return;
 			            }
 			            int lastMove=GoB.lastMove;
-			            GoB.addStone(row, col);
+			            GoB.addStone2(row, col);
 			            if(GoB.lastMove==lastMove){
 			            	System.out.println("Suiside!!You cannot do that.");
 			            }
 
 			            //System.out.println(String.format("y: %d, x: %d", row, col));
-			           // repaint();			
+			            repaint();			
 					}
 					public void mouseClicked(MouseEvent e) {
 						
@@ -61,8 +64,8 @@ public class GoBoard extends JPanel{
 		return GoB;
 	}
 	public void undo(){
-
-		repaint();
+		GoB.undo();
+		//repaint();
 	}
 	
 	public void setBack(Graphics2D g2){	

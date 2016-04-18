@@ -2,6 +2,8 @@ package go;
 /*
  * This class is a JFrame includes the main,
  * All JButtons, JPanel, JMeunBar and some other things can be add here
+ *@author: Zhiyuan Chen
+ *@author: Yudi Dong
  */
 
 import java.awt.*;
@@ -53,14 +55,13 @@ public class StartFrame extends JFrame {
       exitButton=new JButton("QUIT"); 
       exitButton.addActionListener(new ActionListener(){
     	  public void actionPerformed(ActionEvent e) {
-    		  System.out.println(Color.WHITE);
+    		 System.exit(0);
     	  }
       });
       backButton=new JButton("UNDO");  
       backButton.addActionListener(new ActionListener(){
     	  public void actionPerformed(ActionEvent e) {
     		  goBoard.undo();
-    		  System.out.println("aa");
     	  }
       });
 

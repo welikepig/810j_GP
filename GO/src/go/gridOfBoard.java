@@ -3,6 +3,8 @@ package go;
  * This class to make all the logical function to implement all rules
  * UpdateGroup UpdateLiberties CheckLiberties IsSuiside Istaken ,Addstone
  * Data
+ *@author: Zhiyuan Chen
+ *@author: Yudi Dong
  */
 import java.awt.Color;
 import java.util.ArrayList;
@@ -13,13 +15,210 @@ public class gridOfBoard {//Make logic function here
 	protected One[][] board;
 	private static final int ROWS=19; 
 	private static final int COLS=19; 
-	
+	private ArrayList<One[][]> history = new ArrayList<>();
+	private ArrayList<Group> groups = new ArrayList<>();
+	private int current;
+		
 	public gridOfBoard(){
 		board=new One[ROWS][COLS];
 		lastMove=1;
+		current=0;
+		history.add(snapShot(board));
+		System.out.println("new grid");
+	}
+	
+	public void clear(){
+		 for(int i=0;i<ROWS;i++){ 
+	    	    for(int j=0;j<COLS;j++){ 
+	    	    	board[i][j]=null;
+	    	    }
+		 }
+		 history.clear();
+		 history.add(snapShot(board));
+		 groups.clear();
+		 current=0;
+		 lastMove=1;
 	}
 
+	public boolean isTaken(int row, int col) {
+		return board[row][col]!=null;
+	}
+	
+	public void checkLiberties2(One stone){
+		boolean dele= false;
+		int GPNum = 0;
+		for (int i = 0; i < groups.size(); i++) {
+			boolean dead = true;
+			System.out.println("Group's num"+groups.get(i).getGroupNum());
+			System.out.println("Stone's Group's num"+board[stone.getRow()][stone.getCol()].getGroup().getGroupNum());
+			if(groups.get(i).getGroupNum()==board[stone.getRow()][stone.getCol()].getGroup().getGroupNum()){
+				GPNum=i;
+				System.out.println("My gp num is"+GPNum);
+				continue;
+			}
+			for (int j = 0; j < groups.get(i).size(); j++) {
+				if (groups.get(i).get(j).getLiberties() != 0) {
+					dead = false;
+					break;
+				}
+			}
+			if (dead) {
+				for (int j = 0; j < groups.get(i).size(); j++) {
+					board[groups.get(i).get(j).getRow()][groups.get(i).get(j).getCol()] = null;
+				}
+				dele= true;
+			}
+		}
+		if(dele==false){
+			System.out.println("No dele, check self");
+			System.out.println("****");
+			for (int j = 0; j < groups.get(GPNum).size(); j++) {
+				if (groups.get(GPNum).get(j).getLiberties() != 0) {
+					return;
+				}
+			}
+			for (int j = 0; j < groups.get(GPNum).size(); j++) {
+				board[groups.get(GPNum).get(j).getRow()][groups.get(GPNum).get(j).getCol()] = null;
+			}
+		}
+	}
+	
+	private void updateGroups2() {
+		int GPnum=0;
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLS; j++) {
+				if(board[i][j]==null){
+					continue;
+				}
+				if(board[i][j].getGroup()==null){
+					Group gp=new Group(board[i][j]);
+					GPnum++;
+					gp.setGroupNum(GPnum);
+					board[i][j].setGroup(gp);
+					groups.add(gp);
+					
+				}
+				int i1;
+				int j1;
+				for ( i1 = -1; i1 <=1; i1++) {
+					for ( j1 = -1; j1 <=1; j1++) {
+						if(Math.abs(i1)!=Math.abs(j1)){
+							if(i+i1<0||i+i1>18||j+j1<0||j+j1>18){
+								continue;
+							}
+							if(board[i+i1][j+j1]==null){
+								continue;
+							}
+						
+							if (board[i][j].getColor() != board[i+i1][j+j1].getColor()){
+								//System.out.println("different color");
+								continue;
+							}
+							if(board[i+i1][j+j1].getGroup()==null){
+								board[i][j].getGroup().addStone(board[i+i1][j+j1]);
+							}
+							if (board[i][j].getGroup() != board[i+i1][j+j1].getGroup()) {
+								//System.out.println("mergeTwo");
+								groups.remove(board[i+i1][j+j1].getGroup());
+								board[i][j].getGroup().mergeTwoGroup(board[i+i1][j+j1].getGroup());
+							}	
+						
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public void updateLiberties2() {
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLS; j++) {
+				if(board[i][j]==null){
+					continue;
+				}
+				board[i][j].setLiberties(board[i][j].calcuLiberty());
+				One[] neighbors=new One[4];
+				if (i> 0) {//0 up; 1;down; 2 left; 3 right;
+			        neighbors[0] = board[i- 1][j];
+			    }
+			    if (i< ROWS - 1) {
+			    	neighbors[1] = board[i +1][j];
+			    }
+			    if (j > 0) {
+			    	neighbors[2] = board[i][j-1];
+			    }
+			    if (j < COLS - 1) {
+			    	neighbors[3] = board[i][j+1];
+			    }
+				for(int k=0;k<4;k++){
+					if (neighbors[k] == null) {
+			            continue;
+			        }
+					board[i][j].setLiberties(board[i][j].getLiberties()-1);
+				}
+				//System.out.println("Row:"+i+"Cols:"+j+"  "+board[i][j].getLiberties());
+				//System.out.println("****");
+			}
+		}
+
+	}
+	public void addStone2(int row, int col) {
+		Color c;
+		if(lastMove==1){
+			c= Color.BLACK;
+		}
+		else
+			c=Color.WHITE;
+		One stone=new One(row,col,c);
+		stone.setNumber(current);
+		board[row][col]=stone;
+		board=snapShot(board);
+		groups.clear();
+		current++;
+		updateGroups2();
+		updateLiberties2();
+		checkLiberties2(stone);
+		history.add(snapShot(board));
+		//System.out.println("Group size:"+groups.size());
+	   // System.out.println("current is:"+current+"size is:"+history.size());
+		lastMove*=-1;
+		
+	}
+	public void undo(){
+		if(current<1){
+			return;
+		}
+		One[][] temp=board;
+		board = snapShot(history.get(history.size()-2));
+		history.remove(history.size()-1);
+		lastMove*=-1;
+		current--;
+		//System.out.println("current is:"+current+"size is:"+history.size());
+	}
+
+	private One[][] snapShot(One[][] stones) {
+		
+		One[][] temp = new One[19][19];
+		
+		for (int i = 0; i < 19; i++) {
+			for (int j = 0; j < 19; j++) {
+				if(stones[i][j]==null){
+					temp[i][j]=null;
+				}
+				else{
+					temp[i][j]=One.copy(stones[i][j]);
+					temp[i][j].setGroup(null);
+				}
+			}
+		}
+		return temp;
+	}
+}	
+
+/**	 This is the first method I used, but cannot fulfill the undo function
+*	So I totally used another method to do it.
 	public void addStone(int row, int col) {
+		
 		Color c;
 		if(lastMove==1){
 			c= Color.BLACK;
@@ -35,7 +234,7 @@ public class gridOfBoard {//Make logic function here
 			System.out.println("Suiside!! U cannot do it");
 			board[row][col]=null;
 			return;
-		}*/
+		}
 		stone.setGroup(gp);
 		stone = updateLiberties(stone);
 		
@@ -59,9 +258,12 @@ public class gridOfBoard {//Make logic function here
 			board[row][col]=null;
 			return;
 		}	
-		
-	    //System.out.println(stone.getLiberties());
+		current++;
+		history.add(snapShot(board));
+		historyPiece.add(row+","+col);
+	    System.out.println("current is:"+current+"size is:"+history.size());
 		lastMove*=-1;
+		
 	}
 	
 	public Group updateGroups(One stone){
@@ -127,7 +329,7 @@ public class gridOfBoard {//Make logic function here
 		if(count==4){
 				Group gp=new Group(stone);
 				stone.setGroup(gp);
-				//System.out.println("Create a new group");
+				System.out.println("Create a new group");
 			}		
 		return stone.getGroup();
 	}
@@ -180,6 +382,37 @@ public class gridOfBoard {//Make logic function here
 		return stone;
 	}
 
+	public void checkLiberties(One one) {
+		System.out.println(one.getRow()+" "+one.getCol()+":Group liberties: "+one.getGroup().getLiberties());
+	    if (one.getGroup().getLiberties() == 0) {
+	    	//System.out.println("Group liberty is 0");
+	    	Group groupFinal=one.getGroup();
+	        for (One stone : groupFinal.getStones()) {
+	          
+	            if (stone.getRow() > 0) {
+	            	if(board[stone.getRow() - 1][stone.getCol()]!=null)
+	            		board[stone.getRow() - 1][stone.getCol()].setLiberties(
+	            				board[stone.getRow() - 1][stone.getCol()].getLiberties()+1);
+	    	    }
+	    	    if (stone.getRow() < ROWS - 1) {
+	    	    	if(board[stone.getRow() + 1][stone.getCol()]!=null)
+	    	    		board[stone.getRow() + 1][stone.getCol()].setLiberties(
+	    	    				board[stone.getRow() + 1][stone.getCol()].getLiberties()+1);
+	    	    }
+	    	    if (stone.getCol()> 0) {
+	    	    	if(board[stone.getRow() ][stone.getCol()-1]!=null)
+	    	    	 board[stone.getRow() ][stone.getCol()-1].setLiberties(
+	    	    			 board[stone.getRow() ][stone.getCol()-1].getLiberties()+1);
+	    	    }
+	    	    if (stone.getCol() < COLS - 1) {
+	    	    	if(board[stone.getRow() ][stone.getCol()+1]!=null)
+	    	    		board[stone.getRow() ][stone.getCol()+1].setLiberties(
+	    	    				board[stone.getRow() ][stone.getCol()+1].getLiberties()+1);
+	    	    }
+	            board[stone.getRow()][stone.getCol()] = null;   
+	        }
+	    }
+	}
 	
 	
 	private boolean isSuiside(One stone) {
@@ -211,47 +444,5 @@ public class gridOfBoard {//Make logic function here
 	   return false;
 	    
 	}
-
-	public boolean isTaken(int row, int col) {
-		return board[row][col]!=null;
-	}
-	public void checkLiberties(One one) {
-		//System.out.println(one.getRow()+" "+one.getCol()+":Group liberties: "+one.getGroup().getLiberties());
-	    if (one.getGroup().getLiberties() == 0) {
-	    	//System.out.println("Group liberty is 0");
-	    	Group groupFinal=one.getGroup();
-	        for (One stone : groupFinal.getStones()) {
-	          
-	            if (stone.getRow() > 0) {
-	            	if(board[stone.getRow() - 1][stone.getCol()]!=null)
-	            		board[stone.getRow() - 1][stone.getCol()].setLiberties(
-	            				board[stone.getRow() - 1][stone.getCol()].getLiberties()+1);
-	    	    }
-	    	    if (stone.getRow() < ROWS - 1) {
-	    	    	if(board[stone.getRow() + 1][stone.getCol()]!=null)
-	    	    		board[stone.getRow() + 1][stone.getCol()].setLiberties(
-	    	    				board[stone.getRow() + 1][stone.getCol()].getLiberties()+1);
-	    	    }
-	    	    if (stone.getCol()> 0) {
-	    	    	if(board[stone.getRow() ][stone.getCol()-1]!=null)
-	    	    	 board[stone.getRow() ][stone.getCol()-1].setLiberties(
-	    	    			 board[stone.getRow() ][stone.getCol()-1].getLiberties()+1);
-	    	    }
-	    	    if (stone.getCol() < COLS - 1) {
-	    	    	if(board[stone.getRow() ][stone.getCol()+1]!=null)
-	    	    		board[stone.getRow() ][stone.getCol()+1].setLiberties(
-	    	    				board[stone.getRow() ][stone.getCol()+1].getLiberties()+1);
-	    	    }
-	            board[stone.getRow()][stone.getCol()] = null;   
-	        }
-	    }
-	}
-	public void clear(){
-		 for(int i=0;i<ROWS;i++){ 
-	    	    for(int j=0;j<COLS;j++){ 
-	    	    	board[i][j]=null;
-	    	    }
-		 }
-		 lastMove=1;
-	}
-}
+	
+}*/
