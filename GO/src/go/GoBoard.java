@@ -46,12 +46,13 @@ public class GoBoard extends JPanel{
 			            }
 			            int lastMove=GoB.lastMove;
 			            GoB.addStone2(row, col);
+			            paintComponent(getGraphics());	
 			            if(GoB.lastMove==lastMove){
 			            	System.out.println("Suiside!!You cannot do that.");
 			            }
 
 			            //System.out.println(String.format("y: %d, x: %d", row, col));
-			            repaint();			
+			            GoB.AiaddStone();		
 					}
 					public void mouseClicked(MouseEvent e) {
 						
@@ -64,6 +65,7 @@ public class GoBoard extends JPanel{
 		return GoB;
 	}
 	public void undo(){
+		GoB.undo();
 		GoB.undo();
 		//repaint();
 	}

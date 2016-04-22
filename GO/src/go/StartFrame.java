@@ -17,7 +17,6 @@ public class StartFrame extends JFrame {
   private GoBoard goBoard;  
   private JPanel toolbar;  
   private JButton startButton,backButton,exitButton;  
-    
   private JMenuBar menuBar;  
   private JMenu sysMenu;  
   private JMenuItem startMenuItem,exitMenuItem,backMenuItem;  

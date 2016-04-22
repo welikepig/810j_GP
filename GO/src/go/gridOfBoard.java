@@ -8,6 +8,8 @@ package go;
  */
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Random;
+
 
 public class gridOfBoard {//Make logic function here
 	int lastMove;
@@ -18,6 +20,7 @@ public class gridOfBoard {//Make logic function here
 	private ArrayList<One[][]> history = new ArrayList<>();
 	private ArrayList<Group> groups = new ArrayList<>();
 	private int current;
+	public static Random ran=new Random();
 		
 	public gridOfBoard(){
 		board=new One[ROWS][COLS];
@@ -182,8 +185,46 @@ public class gridOfBoard {//Make logic function here
 		//System.out.println("Group size:"+groups.size());
 	   // System.out.println("current is:"+current+"size is:"+history.size());
 		lastMove*=-1;
-		
 	}
+	
+	public void AiaddStone(){
+		boolean take=true;
+		int airow=0;
+		int aicol=0;
+		while(take){
+			airow=ran.nextInt(19);
+			aicol=ran.nextInt(19);
+			if(isTaken(airow,aicol)){
+				continue;
+			}
+			else
+				take=false;
+		}
+		System.out.println("ai, row:"+airow+"ai,col:"+aicol);
+		try {
+	        Thread.sleep(1000);
+		} catch (InterruptedException e) {
+	        e.printStackTrace();
+		}
+		Color c;
+		if(lastMove==1){
+			c= Color.BLACK;
+		}
+		else
+			c=Color.WHITE;
+		One aistone=new One(airow,aicol,c);
+		aistone.setNumber(current);
+		board[airow][aicol]=aistone;
+		board=snapShot(board);
+		groups.clear();
+		current++;
+		updateGroups2();
+		updateLiberties2();
+		checkLiberties2(aistone);
+		history.add(snapShot(board));
+		lastMove*=-1;
+	}
+	
 	public void undo(){
 		if(current<1){
 			return;
