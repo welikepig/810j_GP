@@ -1,51 +1,53 @@
 package go;
-/*
- * This class is a JFrame includes the main,
- * All JButtons, JPanel, JMeunBar and some other things can be add here
- *@author: Zhiyuan Chen
- *@author: Yudi Dong
- */
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.*;  
+import java.awt.*;  
+import javax.swing.*;
+import java.awt.event.*;
 
 
 public class StartFrame extends JFrame {  
   private GoBoard goBoard;  
   private JPanel toolbar;  
   private JButton startButton,backButton,exitButton;  
+    
   private JMenuBar menuBar;  
-  private JMenu sysMenu;  
-  private JMenuItem startMenuItem,exitMenuItem,backMenuItem;  
+  private JMenu sysMenu,startMenu1,startMenu2;  
+  private JMenuItem item1,item2,item3,item4;  
 
   public StartFrame(){  
       setTitle("GO/WEIQI");
       goBoard=new GoBoard();    
-      Container contentPane=getContentPane();  
-      contentPane.add(goBoard); 
-      
-       
+	  Container contentPane=getContentPane();
+	  contentPane.add(goBoard);
+	  
       menuBar =new JMenuBar();
       menuBar.setBackground(new Color(88,161,176));
       sysMenu=new JMenu("Menu");
+   
+      
+      startMenu1 = new JMenu("Play with AI");
+      startMenu2 = new JMenu("Two people Play");
+      item1 = new JMenuItem("Start with Black");
+      item2 = new JMenuItem("start with White");
+      item3 = new JMenuItem("Start with Black");
+      item4 = new JMenuItem("start with White");
+      startMenu1.add(item1);
+      startMenu1.add(item2);
+      startMenu2.add(item3);
+      startMenu2.add(item4);
 
-      startMenuItem=new JMenuItem("START");  
-      exitMenuItem =new JMenuItem("QUIT");  
-      backMenuItem =new JMenuItem("UNDO");  
-
-      sysMenu.add(startMenuItem);  
-      sysMenu.add(exitMenuItem);  
-      sysMenu.add(backMenuItem);  
+      sysMenu.add(startMenu1); 
+      sysMenu.add(startMenu2);
+      
       
       menuBar.add(sysMenu); 
       setJMenuBar(menuBar); 
         
       toolbar=new JPanel();
       toolbar.setBackground(new Color(88,161,176));
-      startButton=new JButton("CLEAR BOARD");  
+      startButton=new JButton("RESTART");
+      exitButton=new JButton("QUIT");  
+      backButton=new JButton("UNDO");
+      
       startButton.addActionListener(new ActionListener(){
     	  public void actionPerformed(ActionEvent e) {
     		  goBoard.getBoard().clear();
@@ -69,14 +71,12 @@ public class StartFrame extends JFrame {
       toolbar.add(exitButton);  
       toolbar.add(backButton);  
       
-      add(toolbar,BorderLayout.SOUTH);  
-      add(goBoard);
+      contentPane.add(toolbar,BorderLayout.SOUTH);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-      setSize(700,930);
+      setSize(830,920);
+      setResizable(false);
       setVisible(true);
         
   }  
-  public static void main(String[] args){  
-         new StartFrame();      
-  }  
+ 
 }
