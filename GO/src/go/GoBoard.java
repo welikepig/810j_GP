@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 public class GoBoard extends JPanel{
-	private static final int MARGIN=30; 
-	private static final int GRID_SPAN=30;
+	private static final int MARGIN=45;
+	private static final int GRID_SPAN=40;
 	private static final int RADIUS=13; 
 	private static final int ROWS=19; 
 	private static final int COLS=19; 
