@@ -40,8 +40,8 @@ public class WelcomeFrame extends JFrame {
 		
 		setTitle("Project: Go/Weiqi");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-	    setSize(830,920);
-	    setResizable(false);
+	    setSize(530,520);
+	    //setResizable(false);
 	    setVisible(true);
 
 	}

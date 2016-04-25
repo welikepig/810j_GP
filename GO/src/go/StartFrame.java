@@ -32,12 +32,23 @@ public class StartFrame extends JFrame {
       item4 = new JMenuItem("start with White");
       startMenu1.add(item1);
       startMenu1.add(item2);
-      startMenu2.add(item3);
-      startMenu2.add(item4);
-
-      sysMenu.add(startMenu1); 
+    //  startMenu2.add(item3);
+     // startMenu2.add(item4);
+      item1.addActionListener(new ActionListener(){
+    	  public void actionPerformed(ActionEvent e) {
+    		  goBoard.getBoard().clear();
+    		  goBoard.setMode(-1);
+    	  }
+      });
+      item2.addActionListener(new ActionListener(){
+    	  public void actionPerformed(ActionEvent e) {
+    		  goBoard.getBoard().clear();
+    		  goBoard.setMode(1);
+    		  goBoard.AiFirstStep();
+    	  }
+      });
       sysMenu.add(startMenu2);
-      
+      sysMenu.add(startMenu1); 
       
       menuBar.add(sysMenu); 
       setJMenuBar(menuBar); 
@@ -73,8 +84,8 @@ public class StartFrame extends JFrame {
       
       contentPane.add(toolbar,BorderLayout.SOUTH);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-      setSize(830,920);
-      setResizable(false);
+      setSize(630,720);
+      //setResizable(false);
       setVisible(true);
         
   }  

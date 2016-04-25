@@ -13,14 +13,22 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 public class GoBoard extends JPanel{
-	private static final int MARGIN=45;
-	private static final int GRID_SPAN=40;
+	private static final int MARGIN=30;
+	private static final int GRID_SPAN=30;
 	private static final int RADIUS=13; 
 	private static final int ROWS=19; 
 	private static final int COLS=19; 
 	private int count=0;
 	private gridOfBoard GoB;
+	private int mode;
 
+	
+	public void setMode(int n){
+		mode=n;
+	}
+	public void AiFirstStep(){
+		GoB.AiaddStone();	
+	}
 	
 	public GoBoard(){
 		GoB=new gridOfBoard();
@@ -50,9 +58,10 @@ public class GoBoard extends JPanel{
 			            if(GoB.lastMove==lastMove){
 			            	System.out.println("Suiside!!You cannot do that.");
 			            }
-
-			            //System.out.println(String.format("y: %d, x: %d", row, col));
-			            GoB.AiaddStone();		
+			            if(Math.abs(mode)==1)
+			            	GoB.AiaddStone();		
+			           
+			            //System.out.println(String.format("y: %d, x: %d", row, col))
 					}
 					public void mouseClicked(MouseEvent e) {
 						
@@ -104,6 +113,5 @@ public class GoBoard extends JPanel{
 	    	    				 i * GRID_SPAN + (int)(Math.sqrt(2)*RADIUS) -2 , 2*RADIUS,2*RADIUS);
 	    	    }
 	       }	
-    }
-    
+    } 
 }
