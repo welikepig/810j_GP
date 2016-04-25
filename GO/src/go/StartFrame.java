@@ -25,15 +25,20 @@ public class StartFrame extends JFrame {
    
       
       startMenu1 = new JMenu("Play with AI");
-      startMenu2 = new JMenu("Two people Play");
+     // startMenu2 = new JMenu("Two people Play");
       item1 = new JMenuItem("Start with Black");
       item2 = new JMenuItem("start with White");
-      item3 = new JMenuItem("Start with Black");
+      item3 = new JMenuItem("Two people Play");
       item4 = new JMenuItem("start with White");
       startMenu1.add(item1);
       startMenu1.add(item2);
     //  startMenu2.add(item3);
-     // startMenu2.add(item4);
+      item3.addActionListener(new ActionListener(){
+    	  public void actionPerformed(ActionEvent e) {
+    		  goBoard.getBoard().clear();
+    		  goBoard.setMode(0);
+    	  }
+      });
       item1.addActionListener(new ActionListener(){
     	  public void actionPerformed(ActionEvent e) {
     		  goBoard.getBoard().clear();
@@ -47,7 +52,7 @@ public class StartFrame extends JFrame {
     		  goBoard.AiFirstStep();
     	  }
       });
-      sysMenu.add(startMenu2);
+      sysMenu.add(item3);
       sysMenu.add(startMenu1); 
       
       menuBar.add(sysMenu); 
