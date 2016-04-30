@@ -1,14 +1,15 @@
 package go;
 /*
- * This class is to build a JPanel to show the background
- * A go game board
+ * This class is to build a JPanel to show the background of a go board
+ * Process the mouse event to add stone
+ * Paint the board whenever a new stone is added
  *@author: Zhiyuan Chen
  *@author: Yudi Dong
  *
  */
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
+
 
 import javax.swing.*;
 
@@ -18,13 +19,16 @@ public class GoBoard extends JPanel{
 	private static final int RADIUS=13; 
 	private static final int ROWS=19; 
 	private static final int COLS=19; 
-	private int count=0;
 	private gridOfBoard GoB;
 	private int mode;
 
 	
 	public void setMode(int n){
 		mode=n;
+	}
+	
+	public int getMode(){
+		return mode;
 	}
 	public void AiFirstStep(){
 		GoB.AiaddStone();	
@@ -75,7 +79,8 @@ public class GoBoard extends JPanel{
 	}
 	public void undo(){
 		GoB.undo();
-		GoB.undo();
+		if(Math.abs(mode)==1)
+			GoB.undo();
 		//repaint();
 	}
 	

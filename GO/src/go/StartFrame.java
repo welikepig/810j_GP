@@ -1,4 +1,9 @@
 package go;
+/*
+ * This class is a JFrame including the meunBar, toolBar 
+ * And three modes in menuBar: Play with AI start with black or white, Play with people 
+ * Three functions in toolBar: Clear board, Undo, Quit
+ */
 import java.awt.*;  
 import javax.swing.*;
 import java.awt.event.*;

@@ -1,6 +1,8 @@
 package go;
 /*
  * This class is to make the group of stones
+ * data member is an ArrayList of stones and the color of this group
+ * Also remember the GroupNum in order to use it when check the liberties
  * Every same color stone linked directly should be in same group
  *@author: Zhiyuan Chen
  *@author: Yudi Dong

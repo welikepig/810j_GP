@@ -1,8 +1,9 @@
 package go;
 /*
  * This class to make all the logical function to implement all rules
- * UpdateGroup UpdateLiberties CheckLiberties IsSuiside Istaken ,Addstone
- * Data
+ * Data: Including the lastMove, board, rows,cols and ArrayList of the board and groups, also a number of current piece on board 
+ * Four main function:updateGroup,updateLiberties,checkLiberties,addStone
+ * Supplementary function: isSuiside, isTaken, clear, undo, snapShot
  *@author: Zhiyuan Chen
  *@author: Yudi Dong
  */
@@ -13,7 +14,6 @@ import java.util.Random;
 
 public class gridOfBoard {//Make logic function here
 	int lastMove;
-	private int groupNum;
 	protected One[][] board;
 	private static final int ROWS=19; 
 	private static final int COLS=19; 
@@ -48,6 +48,8 @@ public class gridOfBoard {//Make logic function here
 	}
 	
 	public void checkLiberties2(One stone){
+		//After adding a stone on the board, we need recalculate all group's liberty
+		//if one group's liberties is 0, move all stones in this group out of board
 		boolean dele= false;
 		int GPNum = 0;
 		for (int i = 0; i < groups.size(); i++) {
@@ -87,6 +89,7 @@ public class gridOfBoard {//Make logic function here
 	}
 	
 	private void updateGroups2() {
+		//Here we need find and set all the groups then we can check the groups' liberties when we do the checkLiberties function
 		int GPnum=0;
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLS; j++) {
@@ -134,6 +137,7 @@ public class gridOfBoard {//Make logic function here
 	}
 
 	public void updateLiberties2() {
+		//Before we do the checkLiberties function, we need first update all single piece's liberties
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLS; j++) {
 				if(board[i][j]==null){
@@ -237,7 +241,7 @@ public class gridOfBoard {//Make logic function here
 		//System.out.println("current is:"+current+"size is:"+history.size());
 	}
 
-	private One[][] snapShot(One[][] stones) {
+	private One[][] snapShot(One[][] stones) { //Only copy the stone's color
 		
 		One[][] temp = new One[19][19];
 		

@@ -1,7 +1,8 @@
 package go;
 /*
  * This class is make one single stone
- * It includes one stone's row, column ,liberties, group, color and function to get these data
+ * data member: one stone's row, column ,liberties, group, color 
+ * And some functions to get these data
  *@author: Zhiyuan Chen
  *@author: Yudi Dong
  */
@@ -52,12 +53,6 @@ public class One
     
     public static One copy(One stone){
     	One temp=new One(stone.row,stone.col,stone.c);
-    	temp.Liberties=stone.Liberties;
-    	//System.out.println("L is"+temp.Liberties);
-    	temp.group=stone.group;
-    	//System.out.println("G L SIZE IS"+temp.group.size());
-    	//System.out.println("GroupN is "+temp.group.getN());
-    	//System.out.println("G L IS"+temp.group.getLiberties());
     	return temp;
     }
     public int getLiberties(){

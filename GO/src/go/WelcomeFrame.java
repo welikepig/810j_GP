@@ -1,4 +1,7 @@
 package go;
+/*
+ * This class is a JFrame, Giving a welcome page
+ */
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
