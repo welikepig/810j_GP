@@ -59,9 +59,6 @@ public class GoBoard extends JPanel{
 			            int lastMove=GoB.lastMove;
 			            GoB.addStone2(row, col);
 			            paintComponent(getGraphics());	
-			            if(GoB.lastMove==lastMove){
-			            	System.out.println("Suiside!!You cannot do that.");
-			            }
 			            if(Math.abs(mode)==1)
 			            	GoB.AiaddStone();		
 			           
