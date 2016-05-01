@@ -55,16 +55,16 @@ public class gridOfBoard {//Make logic function here
     	    			continue;
     	    		}
     	    		else{
-    	    			System.out.println("History is not null, now is null,i:"+i+" j: "+j);
+    	    			//System.out.println("History is not null, now is null,i:"+i+" j: "+j);
     	    			return false;
     	    		}
     	    	}
     	    	else if(board[i][j]==null){
-    	    		System.out.println("History is null, now is not null,i:"+i+" j: "+j);
+    	    		//System.out.println("History is null, now is not null,i:"+i+" j: "+j);
     	    		return false;
     	    	}
     	    	else if(this.board[i][j].getColor()!=board[i][j].getColor()){
-    	    		System.out.println("History is one color, now is another");
+    	    		//System.out.println("History is one color, now is another");
     	    		return false;
     	    	}
     	    }
@@ -72,7 +72,7 @@ public class gridOfBoard {//Make logic function here
 		return true;
 	}
 	
-	public void checkLiberties2(One stone){
+	public boolean checkLiberties2(One stone){
 		//After adding a stone on the board, we need recalculate all group's liberty
 		//if one group's liberties is 0, move all stones in this group out of board
 		boolean dele= false;
@@ -104,13 +104,16 @@ public class gridOfBoard {//Make logic function here
 			//System.out.println("****");
 			for (int j = 0; j < groups.get(GPNum).size(); j++) {
 				if (groups.get(GPNum).get(j).getLiberties() != 0) {
-					return;
+					return false;
 				}
 			}
 			for (int j = 0; j < groups.get(GPNum).size(); j++) {
 				board[groups.get(GPNum).get(j).getRow()][groups.get(GPNum).get(j).getCol()] = null;
 			}
+			System.out.println("Suiside, you cannot do that");
+			return true;
 		}
+		return false;
 	}
 	
 	private void updateGroups2() {
@@ -209,11 +212,20 @@ public class gridOfBoard {//Make logic function here
 		current++;
 		updateGroups2();
 		updateLiberties2();
-		checkLiberties2(stone);
+		boolean isSuiside=checkLiberties2(stone);
 		history.add(snapShot(board));
 		//System.out.println("Group size:"+groups.size());
 	   // System.out.println("current is:"+current+"size is:"+history.size());
 		lastMove*=-1;
+		if(history.size()>2){
+			if(isEqual(history.get(history.size()-3))){
+				System.out.println("Ko rule, cannot place there");
+				undo();
+			}
+		}
+		if(isSuiside){
+			undo();
+		}
 	}
 	
 	public void AiaddStone(){
@@ -249,7 +261,7 @@ public class gridOfBoard {//Make logic function here
 		current++;
 		updateGroups2();
 		updateLiberties2();
-		checkLiberties2(aistone);
+		boolean isSuisuide=checkLiberties2(aistone);
 		history.add(snapShot(board));
 		lastMove*=-1;
 		if(history.size()>2){
@@ -259,13 +271,16 @@ public class gridOfBoard {//Make logic function here
 				AiaddStone();
 			}
 		}
+		if(isSuisuide){
+			undo();
+			AiaddStone();
+		}
 	}
 	
 	public void undo(){
 		if(current<1){
 			return;
 		}
-		One[][] temp=board;
 		board = snapShot(history.get(history.size()-2));
 		history.remove(history.size()-1);
 		lastMove*=-1;
