@@ -12,11 +12,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Random;
-<<<<<<< HEAD
 import javax.swing.*;
 
-=======
->>>>>>> origin/master
 
 
 public class gridOfBoard {//Make logic function here
@@ -28,13 +25,9 @@ public class gridOfBoard {//Make logic function here
 	private ArrayList<Group> groups = new ArrayList<>();
 	private int current;
 	public static Random ran=new Random();
-<<<<<<< HEAD
 	public Font f = new Font("Helvetica", Font.BOLD, 24);
 
 	    
-=======
-		
->>>>>>> origin/master
 	public gridOfBoard(){
 		board=new One[ROWS][COLS];
 		lastMove=1;
@@ -123,7 +116,6 @@ public class gridOfBoard {//Make logic function here
 			for (int j = 0; j < groups.get(GPNum).size(); j++) {
 				board[groups.get(GPNum).get(j).getRow()][groups.get(GPNum).get(j).getCol()] = null;
 			}
-<<<<<<< HEAD
 			JFrame a = new JFrame();
 			a.setTitle("Warning");   
 			JLabel b = new JLabel();
@@ -134,8 +126,6 @@ public class gridOfBoard {//Make logic function here
 			a.setResizable(false);
 			a.setVisible(true);
 			a.setLocationRelativeTo(null);
-=======
->>>>>>> origin/master
 			System.out.println("Suiside, you cannot do that");
 			return true;
 		}
@@ -252,7 +242,6 @@ public class gridOfBoard {//Make logic function here
 		if(isSuiside){
 			undo();
 		}
-<<<<<<< HEAD
 	}
 	
 	public void AiaddStone(){
@@ -314,59 +303,6 @@ public class gridOfBoard {//Make logic function here
 		}
 	}
 	
-=======
-	}
-	
-	public void AiaddStone(){
-		boolean take=true;
-		int airow=0;
-		int aicol=0;
-		while(take){
-			airow=ran.nextInt(19);
-			aicol=ran.nextInt(19);
-			if(isTaken(airow,aicol)){
-				continue;
-			}
-			else
-				take=false;
-		}
-		//System.out.println("ai, row:"+airow+"ai,col:"+aicol);
-		try {
-	        Thread.sleep(1000);
-		} catch (InterruptedException e) {
-	        e.printStackTrace();
-		}
-		Color c;
-		if(lastMove==1){
-			c= Color.BLACK;
-		}
-		else
-			c=Color.WHITE;
-		One aistone=new One(airow,aicol,c);
-		aistone.setNumber(current);
-		board[airow][aicol]=aistone;
-		board=snapShot(board);
-		groups.clear();
-		current++;
-		updateGroups2();
-		updateLiberties2();
-		boolean isSuisuide=checkLiberties2(aistone);
-		history.add(snapShot(board));
-		lastMove*=-1;
-		if(history.size()>2){
-			if(isEqual(history.get(history.size()-3))){
-				System.out.println("Ko rule, cannot place there");
-				undo();
-				AiaddStone();
-			}
-		}
-		if(isSuisuide){
-			undo();
-			AiaddStone();
-		}
-	}
-	
->>>>>>> origin/master
 	public void undo(){
 		if(current<1){
 			return;
