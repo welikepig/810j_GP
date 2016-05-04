@@ -1,24 +1,33 @@
 package go;
+
 /*
  * This class to make all the logical function to implement all rules
- * UpdateGroup UpdateLiberties CheckLiberties IsSuiside Istaken ,Addstone
- * Data
+ * Data: Including the lastMove, board, rows,cols and ArrayList of the board and groups, also a number of current piece on board 
+ * Four main function:updateGroup,updateLiberties,checkLiberties,addStone
+ * Supplementary function: isSuiside, isTaken, clear, undo, snapShot, isEqual
  *@author: Zhiyuan Chen
  *@author: Yudi Dong
  */
 import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
+import java.util.Random;
+import javax.swing.*;
+
+
 
 public class gridOfBoard {//Make logic function here
 	int lastMove;
-	private int groupNum;
 	protected One[][] board;
 	private static final int ROWS=19; 
 	private static final int COLS=19; 
 	private ArrayList<One[][]> history = new ArrayList<>();
 	private ArrayList<Group> groups = new ArrayList<>();
 	private int current;
-		
+	public static Random ran=new Random();
+	public Font f = new Font("Helvetica", Font.BOLD, 24);
+
+	    
 	public gridOfBoard(){
 		board=new One[ROWS][COLS];
 		lastMove=1;
@@ -44,16 +53,43 @@ public class gridOfBoard {//Make logic function here
 		return board[row][col]!=null;
 	}
 	
-	public void checkLiberties2(One stone){
+	public boolean isEqual(One[][] board){
+		for(int i=0;i<ROWS;i++){ 
+    	    for(int j=0;j<COLS;j++){
+    	    	if(this.board[i][j]==null){
+    	    		if(board[i][j]==null){
+    	    			continue;
+    	    		}
+    	    		else{
+    	    			//System.out.println("History is not null, now is null,i:"+i+" j: "+j);
+    	    			return false;
+    	    		}
+    	    	}
+    	    	else if(board[i][j]==null){
+    	    		//System.out.println("History is null, now is not null,i:"+i+" j: "+j);
+    	    		return false;
+    	    	}
+    	    	else if(this.board[i][j].getColor()!=board[i][j].getColor()){
+    	    		//System.out.println("History is one color, now is another");
+    	    		return false;
+    	    	}
+    	    }
+		}
+		return true;
+	}
+	
+	public boolean checkLiberties2(One stone){
+		//After adding a stone on the board, we need recalculate all group's liberty
+		//if one group's liberties is 0, move all stones in this group out of board
 		boolean dele= false;
 		int GPNum = 0;
 		for (int i = 0; i < groups.size(); i++) {
 			boolean dead = true;
-			System.out.println("Group's num"+groups.get(i).getGroupNum());
-			System.out.println("Stone's Group's num"+board[stone.getRow()][stone.getCol()].getGroup().getGroupNum());
+			//System.out.println("Group's num"+groups.get(i).getGroupNum());
+			//System.out.println("Stone's Group's num"+board[stone.getRow()][stone.getCol()].getGroup().getGroupNum());
 			if(groups.get(i).getGroupNum()==board[stone.getRow()][stone.getCol()].getGroup().getGroupNum()){
 				GPNum=i;
-				System.out.println("My gp num is"+GPNum);
+				//System.out.println("My gp num is"+GPNum);
 				continue;
 			}
 			for (int j = 0; j < groups.get(i).size(); j++) {
@@ -70,20 +106,34 @@ public class gridOfBoard {//Make logic function here
 			}
 		}
 		if(dele==false){
-			System.out.println("No dele, check self");
-			System.out.println("****");
+			//System.out.println("No dele, check self");
+			//System.out.println("****");
 			for (int j = 0; j < groups.get(GPNum).size(); j++) {
 				if (groups.get(GPNum).get(j).getLiberties() != 0) {
-					return;
+					return false;
 				}
 			}
 			for (int j = 0; j < groups.get(GPNum).size(); j++) {
 				board[groups.get(GPNum).get(j).getRow()][groups.get(GPNum).get(j).getCol()] = null;
 			}
+			JFrame a = new JFrame();
+			a.setTitle("Warning");   
+			JLabel b = new JLabel();
+			a.add(b,BoxLayout.X_AXIS);
+			b.setText("Suiside, you cannot do that");
+			b.setFont(f);
+			a.setSize(400,100);
+			a.setResizable(false);
+			a.setVisible(true);
+			a.setLocationRelativeTo(null);
+			System.out.println("Suiside, you cannot do that");
+			return true;
 		}
+		return false;
 	}
 	
 	private void updateGroups2() {
+		//Here we need find and set all the groups then we can check the groups' liberties when we do the checkLiberties function
 		int GPnum=0;
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLS; j++) {
@@ -131,6 +181,7 @@ public class gridOfBoard {//Make logic function here
 	}
 
 	public void updateLiberties2() {
+		//Before we do the checkLiberties function, we need first update all single piece's liberties
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLS; j++) {
 				if(board[i][j]==null){
@@ -177,18 +228,85 @@ public class gridOfBoard {//Make logic function here
 		current++;
 		updateGroups2();
 		updateLiberties2();
-		checkLiberties2(stone);
+		boolean isSuiside=checkLiberties2(stone);
 		history.add(snapShot(board));
 		//System.out.println("Group size:"+groups.size());
 	   // System.out.println("current is:"+current+"size is:"+history.size());
 		lastMove*=-1;
-		
+		if(history.size()>2){
+			if(isEqual(history.get(history.size()-3))){
+				System.out.println("Ko rule, cannot place there");
+				undo();
+			}
+		}
+		if(isSuiside){
+			undo();
+		}
 	}
+	
+	public void AiaddStone(){
+		boolean take=true;
+		int airow=0;
+		int aicol=0;
+		while(take){
+			airow=ran.nextInt(19);
+			aicol=ran.nextInt(19);
+			if(isTaken(airow,aicol)){
+				continue;
+			}
+			else
+				take=false;
+		}
+		//System.out.println("ai, row:"+airow+"ai,col:"+aicol);
+		try {
+	        Thread.sleep(1000);
+		} catch (InterruptedException e) {
+	        e.printStackTrace();
+		}
+		Color c;
+		if(lastMove==1){
+			c= Color.BLACK;
+		}
+		else
+			c=Color.WHITE;
+		One aistone=new One(airow,aicol,c);
+		aistone.setNumber(current);
+		board[airow][aicol]=aistone;
+		board=snapShot(board);
+		groups.clear();
+		current++;
+		updateGroups2();
+		updateLiberties2();
+		boolean isSuisuide=checkLiberties2(aistone);
+		history.add(snapShot(board));
+		lastMove*=-1;
+		if(history.size()>2){
+			if(isEqual(history.get(history.size()-3))){
+				JFrame a = new JFrame();
+				a.setTitle("Warning");   
+				JLabel b = new JLabel();
+				a.add(b,BoxLayout.X_AXIS);
+				b.setText("Suiside, you cannot do that");
+				b.setFont(f);
+				a.setSize(400,100);
+				a.setResizable(false);
+				a.setVisible(true);
+				a.setLocationRelativeTo(null);
+				System.out.println("Ko rule, cannot place there");
+				undo();
+				AiaddStone();
+			}
+		}
+		if(isSuisuide){
+			undo();
+			AiaddStone();
+		}
+	}
+	
 	public void undo(){
 		if(current<1){
 			return;
 		}
-		One[][] temp=board;
 		board = snapShot(history.get(history.size()-2));
 		history.remove(history.size()-1);
 		lastMove*=-1;
@@ -196,7 +314,7 @@ public class gridOfBoard {//Make logic function here
 		//System.out.println("current is:"+current+"size is:"+history.size());
 	}
 
-	private One[][] snapShot(One[][] stones) {
+	private One[][] snapShot(One[][] stones) { //Only copy the stone's color
 		
 		One[][] temp = new One[19][19];
 		

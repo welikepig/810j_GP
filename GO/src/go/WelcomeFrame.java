@@ -1,3 +1,7 @@
+package go;
+/*
+ * This class is a JFrame, Giving a welcome page
+ */
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -9,7 +13,7 @@ public class WelcomeFrame extends JFrame {
 		c.setBackground(new Color(238,173,14));
 		
 		JButton s=new JButton("Let's Play");
-		JLabel l=new JLabel("Project: Go/Weiqi",JLabel.CENTER);
+		JLabel l=new JLabel("<html>Project: Go/Weiqi<br/>Zhiyuan Chen<br/>Yudi Dong<html>",JLabel.CENTER);
 		
 		Font font=new Font("Project: Go/Weiqi",Font.BOLD,50);
 		Font font1=new Font("Let's Play",Font.BOLD,45);
@@ -39,9 +43,10 @@ public class WelcomeFrame extends JFrame {
 		
 		setTitle("Project: Go/Weiqi");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-	    setSize(830,920);
+		setSize(610,700);
 	    setResizable(false);
 	    setVisible(true);
+	    setLocationRelativeTo(null);
 
 	}
 	
@@ -51,7 +56,7 @@ public class WelcomeFrame extends JFrame {
 }
 
 class ImagePanel extends JPanel{
-	private ImageIcon imageIcon=new ImageIcon("/image/weiqi.jpg");
+	private ImageIcon imageIcon=new ImageIcon("image/weiqi.jpg");
 	private Image image=imageIcon.getImage();
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);

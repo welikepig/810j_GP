@@ -1,29 +1,43 @@
 package go;
 /*
- * This class is to build a JPanel to show the background
- * A go game board
+ * This class is to build a JPanel to show the background of a go board
+ * Process the mouse event to add stone
+ * Paint the board whenever a new stone is added
  *@author: Zhiyuan Chen
  *@author: Yudi Dong
  *
  */
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
+
 
 import javax.swing.*;
 
 public class GoBoard extends JPanel{
-	private static final int MARGIN=30; 
+	private static final int MARGIN=30;
 	private static final int GRID_SPAN=30;
 	private static final int RADIUS=13; 
 	private static final int ROWS=19; 
 	private static final int COLS=19; 
-	private int count=0;
 	private gridOfBoard GoB;
+	private int mode;
 
+	
+	public void setMode(int n){
+		mode=n;
+	}
+	
+	public int getMode(){
+		return mode;
+	}
+	public void AiFirstStep(){
+		GoB.AiaddStone();	
+	}
 	
 	public GoBoard(){
 		GoB=new gridOfBoard();
+		JLabel a = new JLabel();
+		add(a,BorderLayout.NORTH);
 		addMouseListener(
 				new MouseAdapter() {
 					@Override
@@ -41,17 +55,20 @@ public class GoBoard extends JPanel{
 			            }
 			            
 			            if (GoB.isTaken(row, col)) {
+			   
+			            	a.setText("This place is Already taken!!");
+			            	
 			            	System.out.println("This place is Already taken!!");
 			                return;
 			            }
+			       
 			            int lastMove=GoB.lastMove;
 			            GoB.addStone2(row, col);
-			            if(GoB.lastMove==lastMove){
-			            	System.out.println("Suiside!!You cannot do that.");
-			            }
-
-			            //System.out.println(String.format("y: %d, x: %d", row, col));
-			            repaint();			
+			            paintComponent(getGraphics());	
+			            if(Math.abs(mode)==1)
+			            	GoB.AiaddStone();		
+			           
+			            //System.out.println(String.format("y: %d, x: %d", row, col))
 					}
 					public void mouseClicked(MouseEvent e) {
 						
@@ -65,6 +82,8 @@ public class GoBoard extends JPanel{
 	}
 	public void undo(){
 		GoB.undo();
+		if(Math.abs(mode)==1)
+			GoB.undo();
 		//repaint();
 	}
 	
@@ -102,6 +121,5 @@ public class GoBoard extends JPanel{
 	    	    				 i * GRID_SPAN + (int)(Math.sqrt(2)*RADIUS) -2 , 2*RADIUS,2*RADIUS);
 	    	    }
 	       }	
-    }
-    
+    } 
 }
