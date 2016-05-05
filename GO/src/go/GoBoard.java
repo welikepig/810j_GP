@@ -24,7 +24,7 @@ public class GoBoard extends JPanel{
 	private static final int ROWS=19; 
 	private static final int COLS=19; 
 	private static JLabel turn;
-	private BoardLogic GoB;
+	private BoardLogic BLogic;
 	private int mode;
 
 	
@@ -36,14 +36,14 @@ public class GoBoard extends JPanel{
 		return mode;
 	}
 	public void AiFirstStep(){
-		GoB.AiaddStone();	
+		BLogic.AiaddStone();	
 	}
 	public void pass(){
-		GoB.lastMove*=-1;
+		BLogic.lastMove*=-1;
 	}
 	
 	public GoBoard(){
-		GoB=new BoardLogic();
+		BLogic=new BoardLogic();
 		turn =new JLabel();
 		add(turn,BorderLayout.NORTH);
 		addMouseListener(
@@ -57,12 +57,11 @@ public class GoBoard extends JPanel{
 
 			            // DEBUG INFO
 			           
-
 			            if (row >= ROWS || col >= COLS || row < 0 || col < 0) {
 			                return;
 			            }
 			            
-			            if (GoB.isTaken(row, col)) {
+			            if (BLogic.isTaken(row, col)) {
 			   
 			            	StartFrame.display.setText("This place is Already taken!!");
 			            	
@@ -70,10 +69,10 @@ public class GoBoard extends JPanel{
 			                return;
 			            }
 			     
-			            GoB.addStone2(row, col);
+			            BLogic.addStone2(row, col);
 			            paintComponent(getGraphics());	
 			            if(Math.abs(mode)==1)
-			            	GoB.AiaddStone();
+			            	BLogic.AiaddStone();
 			            //System.out.println(String.format("y: %d, x: %d", row, col))
 					}
 					public void mouseClicked(MouseEvent e) {
@@ -83,20 +82,20 @@ public class GoBoard extends JPanel{
 	   	   
     }
 	
-	public BoardLogic getBoard(){
-		return GoB;
+	public void clear(){
+		BLogic.clear();
 	}
 	public void undo(){
-		GoB.undo();
+		BLogic.undo();
 		if(Math.abs(mode)==1)
-			GoB.undo();
+			BLogic.undo();
 		//repaint();
 	}
 	public void save() throws FileNotFoundException{
-		GoB.save();
+		BLogic.save();
 	}
 	public void load() throws FileNotFoundException{
-		GoB.load();
+		BLogic.load();
 		paintComponent(getGraphics());
 	}
 	
@@ -123,18 +122,18 @@ public class GoBoard extends JPanel{
     	   super.paintComponent(g);  
 	       Graphics2D g2 = (Graphics2D) g;
 	       setBack(g2);
-	       if(GoB.lastMove==1){
+	       if(BLogic.lastMove==1){
 	    	   turn.setText("BLACK TURN");
 	       }
-	       else if(GoB.lastMove==-1){
+	       else if(BLogic.lastMove==-1){
 	    	   turn.setText("WHITE TURN");
 	       }
 	       for(int i=0;i<ROWS;i++){ 
 	    	    for(int j=0;j<COLS;j++){ 
-	    	    	if(GoB.board[i][j]==null){
+	    	    	if(BLogic.board[i][j]==null){
 	    	    		continue;
 	    	    	}
-	    	    		g2.setColor(GoB.board[i][j].getColor());
+	    	    		g2.setColor(BLogic.board[i][j].getColor());
 	    	    		g2.fillOval(j* GRID_SPAN  + (int)(Math.sqrt(2)*RADIUS) -2 ,
 	    	    				 i * GRID_SPAN + (int)(Math.sqrt(2)*RADIUS) -2 , 2*RADIUS,2*RADIUS);
 	    	    }

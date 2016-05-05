@@ -3,7 +3,7 @@ package go;
 /*
  * This class to make all the logical function to implement all rules
  * Data: Including the lastMove, board, rows,cols and ArrayList of the board and groups, also a number of current piece on board 
- * Four main function:updateGroup,updateLiberties,checkLiberties,addStone
+ * Four main algorithm:updateGroup,updateLiberties,checkLiberties,addStone
  * Supplementary function: isSuiside, isTaken, clear, undo, snapShot, isEqual
  *@author: Zhiyuan Chen
  *@author: Yudi Dong

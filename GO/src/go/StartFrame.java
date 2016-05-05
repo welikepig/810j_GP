@@ -18,7 +18,7 @@ public class StartFrame extends JFrame {
 
 
 public static GoBoard goBoard = new GoBoard();  
-  public static JPanel toolbar,p2;
+  public static JPanel toolbar;
   public static JTextField display;
   public static JButton startButton,backButton,exitButton,saveButton,loadButton,passButton;  
   public static JMenuBar menuBar;  
@@ -51,14 +51,14 @@ public static GoBoard goBoard = new GoBoard();
     //  startMenu2.add(item3);
       item3.addActionListener(new ActionListener(){
     	  public void actionPerformed(ActionEvent e) {
-    		  goBoard.getBoard().clear();
+    		  goBoard.clear();
     		  goBoard.setMode(0);
     		  display.setText("Two people Play");  
     	  }
       });
       item1.addActionListener(new ActionListener(){
     	  public void actionPerformed(ActionEvent e) {
-    		  goBoard.getBoard().clear();
+    		  goBoard.clear();
     		  goBoard.setMode(-1);
     		  display.setText("Play with AI"+": "+item1.getText() );
 
@@ -66,7 +66,7 @@ public static GoBoard goBoard = new GoBoard();
       });
       item2.addActionListener(new ActionListener(){
     	  public void actionPerformed(ActionEvent e) {
-    		  goBoard.getBoard().clear();
+    		  goBoard.clear();
     		  goBoard.setMode(1);
     		  display.setText("Play with AI"+": "+item2.getText() );
 
@@ -88,7 +88,7 @@ public static GoBoard goBoard = new GoBoard();
       
       startButton.addActionListener(new ActionListener(){
     	  public void actionPerformed(ActionEvent e) {
-    		  goBoard.getBoard().clear();
+    		  goBoard.clear();
     		  display.setText("Restart");
 
     	  }
@@ -148,7 +148,7 @@ public static GoBoard goBoard = new GoBoard();
       
       contentPane.add(toolbar,BorderLayout.SOUTH);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-      setSize(630,720);
+      setSize(610,720);
       setResizable(false);
       setVisible(true);
       setLocationRelativeTo(null);   
