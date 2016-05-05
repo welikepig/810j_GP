@@ -9,17 +9,22 @@ package go;
  */
 import java.awt.*;
 import java.awt.event.*;
-
+import java.io.FileNotFoundException;
 
 import javax.swing.*;
 
 public class GoBoard extends JPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3L;
 	private static final int MARGIN=30;
 	private static final int GRID_SPAN=30;
 	private static final int RADIUS=13; 
 	private static final int ROWS=19; 
 	private static final int COLS=19; 
-	private gridOfBoard GoB;
+	private static JLabel turn;
+	private BoardLogic GoB;
 	private int mode;
 
 	
@@ -33,11 +38,14 @@ public class GoBoard extends JPanel{
 	public void AiFirstStep(){
 		GoB.AiaddStone();	
 	}
+	public void pass(){
+		GoB.lastMove*=-1;
+	}
 	
 	public GoBoard(){
-		GoB=new gridOfBoard();
-		JLabel a = new JLabel();
-		add(a,BorderLayout.NORTH);
+		GoB=new BoardLogic();
+		turn =new JLabel();
+		add(turn,BorderLayout.NORTH);
 		addMouseListener(
 				new MouseAdapter() {
 					@Override
@@ -56,18 +64,16 @@ public class GoBoard extends JPanel{
 			            
 			            if (GoB.isTaken(row, col)) {
 			   
-			            	a.setText("This place is Already taken!!");
+			            	StartFrame.display.setText("This place is Already taken!!");
 			            	
 			            	System.out.println("This place is Already taken!!");
 			                return;
 			            }
-			       
-			            int lastMove=GoB.lastMove;
+			     
 			            GoB.addStone2(row, col);
 			            paintComponent(getGraphics());	
 			            if(Math.abs(mode)==1)
-			            	GoB.AiaddStone();		
-			           
+			            	GoB.AiaddStone();
 			            //System.out.println(String.format("y: %d, x: %d", row, col))
 					}
 					public void mouseClicked(MouseEvent e) {
@@ -77,7 +83,7 @@ public class GoBoard extends JPanel{
 	   	   
     }
 	
-	public gridOfBoard getBoard(){
+	public BoardLogic getBoard(){
 		return GoB;
 	}
 	public void undo(){
@@ -85,6 +91,13 @@ public class GoBoard extends JPanel{
 		if(Math.abs(mode)==1)
 			GoB.undo();
 		//repaint();
+	}
+	public void save() throws FileNotFoundException{
+		GoB.save();
+	}
+	public void load() throws FileNotFoundException{
+		GoB.load();
+		paintComponent(getGraphics());
 	}
 	
 	public void setBack(Graphics2D g2){	
@@ -109,8 +122,13 @@ public class GoBoard extends JPanel{
     public void paintComponent(Graphics g){  
     	   super.paintComponent(g);  
 	       Graphics2D g2 = (Graphics2D) g;
-	    
 	       setBack(g2);
+	       if(GoB.lastMove==1){
+	    	   turn.setText("BLACK TURN");
+	       }
+	       else if(GoB.lastMove==-1){
+	    	   turn.setText("WHITE TURN");
+	       }
 	       for(int i=0;i<ROWS;i++){ 
 	    	    for(int j=0;j<COLS;j++){ 
 	    	    	if(GoB.board[i][j]==null){

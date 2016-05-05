@@ -8,11 +8,16 @@ import javax.swing.*;
 
 
 public class WelcomeFrame extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public WelcomeFrame(){
 		Container c=getContentPane();
 		c.setBackground(new Color(238,173,14));
 		
-		JButton s=new JButton("Let's Play");
+		JButton s=new JButton("Let's play Weiqi");
 		JLabel l=new JLabel("<html>Project: Go/Weiqi<br/>Zhiyuan Chen<br/>Yudi Dong<html>",JLabel.CENTER);
 		
 		Font font=new Font("Project: Go/Weiqi",Font.BOLD,50);
@@ -56,6 +61,10 @@ public class WelcomeFrame extends JFrame {
 }
 
 class ImagePanel extends JPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID =5L;
 	private ImageIcon imageIcon=new ImageIcon("image/weiqi.jpg");
 	private Image image=imageIcon.getImage();
 	protected void paintComponent(Graphics g){

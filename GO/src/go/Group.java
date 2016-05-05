@@ -11,7 +11,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 public class Group {
-	private ArrayList<One> stones;
+	private ArrayList<Stone> stones;
 	private Color c;
 	public int GroupNum;
 	public Group(){
@@ -20,7 +20,7 @@ public class Group {
 	public int getGroupNum(){
 		return GroupNum;
 	}
-	public Group(One stone){
+	public Group(Stone stone){
 	
 		stones=new ArrayList<>();
 		stones.add(stone);
@@ -33,24 +33,24 @@ public class Group {
 	}
 	
 	
-	public One get(int num){
+	public Stone get(int num){
 		return getStones().get(num);
 	}
 	
 	
 	public int getLiberties() {
 	    int total = 0;
-	    for (One one : stones) {
+	    for (Stone one : stones) {
 	        total += one.getLiberties();
 	    }
 	    return total;
 	}
-	public void addStone(One one) {
+	public void addStone(Stone one) {
 	    one.setGroup(this);
 	    stones.add(one);
 	    //System.out.println(getStones().size());
 	}
-	public void remove(One one){
+	public void remove(Stone one){
 		stones.remove(one);
 	}
 	public void mergeTwoGroup(Group g){
@@ -63,10 +63,10 @@ public class Group {
 		return c;
 	}
 	
-	public ArrayList<One> getStones() {
+	public ArrayList<Stone> getStones() {
 		return stones;
 	}
-	public void setStones(ArrayList<One> stones) {
+	public void setStones(ArrayList<Stone> stones) {
 		this.stones = stones;
 	}
 	public void clear() {
