@@ -27,8 +27,10 @@ public class WelcomeFrame extends JFrame {
 		Font font1=new Font("name",Font.ITALIC,25);
 		Font font2=new Font("play",Font.CENTER_BASELINE,30);
 		l1.setFont(font);
+		l2.setForeground(Color.WHITE);
 		l2.setFont(font1);
 		l3.setFont(font1);
+		l3.setForeground(Color.WHITE);
 		s.setFont(font2);
 		s.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -37,6 +39,7 @@ public class WelcomeFrame extends JFrame {
 			}
 		});
 		s.setBackground(Color.gray);
+		s.setForeground(Color.WHITE);
 		
 		JPanel p1=new JPanel();
 		ImageIcon img = new ImageIcon(getClass().getResource("/image/weiqi.jpg"));
