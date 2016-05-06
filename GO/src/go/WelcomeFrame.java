@@ -15,35 +15,47 @@ public class WelcomeFrame extends JFrame {
 
 	public WelcomeFrame(){
 		Container c=getContentPane();
-		c.setBackground(new Color(238,173,14));
+
 		
 		JButton s=new JButton("Let's play Weiqi");
-		JLabel l=new JLabel("<html>Project: Go/Weiqi<br/>Zhiyuan Chen<br/>Yudi Dong<html>",JLabel.CENTER);
+		JLabel l1=new JLabel("Project: Go/Weiqi",JLabel.CENTER);
+		JLabel l2=new JLabel("Zhiyuan Chen",JLabel.CENTER);
+		JLabel l3=new JLabel("Yudi Dong",JLabel.CENTER);
 		
-		Font font=new Font("Project: Go/Weiqi",Font.BOLD,50);
-		Font font1=new Font("Let's Play",Font.BOLD,45);
-		l.setFont(font);
-		s.setFont(font1);
+		
+		Font font=new Font("Project: Go/Weiqi",Font.CENTER_BASELINE,40);
+		Font font1=new Font("name",Font.ITALIC,25);
+		Font font2=new Font("play",Font.CENTER_BASELINE,30);
+		l1.setFont(font);
+		l2.setFont(font1);
+		l3.setFont(font1);
+		s.setFont(font2);
 		s.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new StartFrame();
 				dispose();
 			}
 		});
+		s.setBackground(Color.gray);
 		
 		JPanel p1=new JPanel();
-		JPanel p2=new JPanel();
+		ImageIcon img = new ImageIcon(getClass().getResource("/image/weiqi.jpg"));
+		BackgroundPanel p2=new BackgroundPanel(img.getImage());
 		JPanel p3=new JPanel();
-		
-		c.setLayout(new BorderLayout());
-		
-		p1.add(l,BorderLayout.CENTER);
-		p2.add(new ImagePanel());
+         
+		p1.setLayout(new BorderLayout());
+		p1.setBackground(Color.lightGray);
+		p1.add(l1,BorderLayout.NORTH);
+		p1.add(l2,BorderLayout.CENTER);
+		p1.add(l3,BorderLayout.SOUTH);
 		p3.add(s);
-		
+		p3.setBackground(Color.lightGray);
+        
+
 		c.add(p1,BorderLayout.NORTH);
 		c.add(p2,BorderLayout.CENTER);
 		c.add(p3,BorderLayout.SOUTH);
+
 		
 		
 		setTitle("Project: Go/Weiqi");
@@ -60,16 +72,18 @@ public class WelcomeFrame extends JFrame {
 	}
 }
 
-class ImagePanel extends JPanel{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID =5L;
-	private ImageIcon imageIcon=new ImageIcon("image/weiqi.jpg");
-	private Image image=imageIcon.getImage();
-	protected void paintComponent(Graphics g){
-		super.paintComponent(g);
-		if (image==null)
-			g.drawImage(image,0,0,getWidth(),getHeight(),this);
-	}
-}
+class BackgroundPanel extends JPanel  {  
+    Image im;  
+    public BackgroundPanel(Image im)  
+    {  
+        this.im=im;  
+        this.setOpaque(false);  
+    }  
+    //Draw the back ground.  
+    public void paintComponent(Graphics g)  
+    {  
+        super.paintComponents(g);  
+        g.drawImage(im,0,0,this.getWidth(),this.getHeight(),this);  
+          
+    }  
+}  
