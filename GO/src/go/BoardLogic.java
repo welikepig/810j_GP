@@ -38,139 +38,48 @@ public class BoardLogic {//Make logic function here
 		lastMove=1;
 		current=0;
 		history.add(snapShot(board));
-		System.out.println("new grid");
-	}
-	
-	public void clear(){
-		 for(int i=0;i<ROWS;i++){ 
-	    	    for(int j=0;j<COLS;j++){ 
-	    	    	board[i][j]=null;
-	    	    }
-		 }
-		 history.clear();
-		 history.add(snapShot(board));
-		 groups.clear();
-		 current=0;
-		 lastMove=1;
-	}
-	public void save() throws FileNotFoundException{
-		FileOutputStream fs = new FileOutputStream(new File("board.txt"));
-		System.out.println("Save File");
-		p = new PrintStream(fs);
-		p.println(lastMove);
-		for(int i=0;i<ROWS;i++){ 
-	    	    for(int j=0;j<COLS;j++){ 
-	    	    	if(board[i][j]==null){
-	    	    		p.print(0+" ");
-	    	    	}
-	    	    	else if(board[i][j].getColor()==Color.BLACK){
-	    	    		p.print(1+" ");
-	    	    	}
-	    	    	else{
-	    	    		p.print(-1+" ");
-	    	    	}
-	    	    }
-	    	    p.println();
-		 }
-	}
-	public void load() throws FileNotFoundException{
-		sc = new Scanner(new FileReader("board.txt"));
-		lastMove=sc.nextInt();
-   		System.out.println("Load File");
-   		int read=0;
-		for(int i=0;i<ROWS;i++){ 
-    	    for(int j=0;j<COLS;j++){
-    	    	read=sc.nextInt();
-    	    	if(read==0){
-    	    		board[i][j]=null;
-    	    	}
-    	    	else if(read==1){
-    	    		board[i][j]=new Stone(i,j,Color.BLACK);
-    	    	}
-    	    	else{
-    	    		board[i][j]=new Stone(i,j,Color.WHITE);
-    	    	}
-    	    }
-		}
-		history.clear();
-		history.add(snapShot(board));
-		groups.clear();
-		current=0;
+		//System.out.println("new grid");
 	}
 
-	
-	public boolean isTaken(int row, int col) {
-		return board[row][col]!=null;
-	}
-	
-	public boolean isEqual(Stone[][] board){
-		for(int i=0;i<ROWS;i++){ 
-    	    for(int j=0;j<COLS;j++){
-    	    	if(this.board[i][j]==null){
-    	    		if(board[i][j]==null){
-    	    			continue;
-    	    		}
-    	    		else{
-    	    			//System.out.println("History is not null, now is null,i:"+i+" j: "+j);
-    	    			return false;
-    	    		}
-    	    	}
-    	    	else if(board[i][j]==null){
-    	    		//System.out.println("History is null, now is not null,i:"+i+" j: "+j);
-    	    		return false;
-    	    	}
-    	    	else if(this.board[i][j].getColor()!=board[i][j].getColor()){
-    	    		//System.out.println("History is one color, now is another");
-    	    		return false;
-    	    	}
-    	    }
+	public void addStone2(int row, int col) {
+		Color c;
+		if(lastMove==1){
+			c= Color.BLACK;
 		}
-		return true;
-	}
-	
-	public boolean checkLiberties2(Stone stone){
-		//After adding a stone on the board, we need recalculate all group's liberty
-		//if one group's liberties is 0, move all stones in this group out of board
-		boolean dele= false;
-		int GPNum = 0;
-		for (int i = 0; i < groups.size(); i++) {
-			boolean dead = true;
-			//System.out.println("Group's num"+groups.get(i).getGroupNum());
-			//System.out.println("Stone's Group's num"+board[stone.getRow()][stone.getCol()].getGroup().getGroupNum());
-			if(groups.get(i).getGroupNum()==board[stone.getRow()][stone.getCol()].getGroup().getGroupNum()){
-				GPNum=i;
-				//System.out.println("My gp num is"+GPNum);
-				continue;
+		else
+			c=Color.WHITE;
+		Stone stone=new Stone(row,col,c);
+		stone.setNumber(current);
+		board[row][col]=stone;
+		if(c==Color.BLACK){
+			StartFrame.display.setText("Last Move: Black at "+(row+1)+","+(col+1));
 			}
-			for (int j = 0; j < groups.get(i).size(); j++) {
-				if (groups.get(i).get(j).getLiberties() != 0) {
-					dead = false;
-					break;
-				}
-			}
-			if (dead) {
-				for (int j = 0; j < groups.get(i).size(); j++) {
-					board[groups.get(i).get(j).getRow()][groups.get(i).get(j).getCol()] = null;
-				}
-				dele= true;
+		else{
+			StartFrame.display.setText("Last Move: WHITE at "+(row+1)+","+(col+1));
+		}
+		board=snapShot(board);
+		groups.clear();
+		current++;
+		updateGroups2();
+		updateLiberties2();
+		boolean isSuicide=checkLiberties2(stone);
+		history.add(snapShot(board));
+		//System.out.println("Group size:"+groups.size());
+	   // System.out.println("current is:"+current+"size is:"+history.size());
+		lastMove*=-1;
+		if(history.size()>2){
+			if(isEqual(history.get(history.size()-3))){
+				System.out.println("Ko rule, cannot place there");
+				undo();
+				StartFrame.display.setText("Ko rule, cannot place there");
 			}
 		}
-		if(dele==false){
-			//System.out.println("No dele, check self");
-			//System.out.println("****");
-			for (int j = 0; j < groups.get(GPNum).size(); j++) {
-				if (groups.get(GPNum).get(j).getLiberties() != 0) {
-					return false;
-				}
-			}
-			for (int j = 0; j < groups.get(GPNum).size(); j++) {
-				board[groups.get(GPNum).get(j).getRow()][groups.get(GPNum).get(j).getCol()] = null;
-			}
-			return true;
+		if(isSuicide){
+			undo();
+			StartFrame.display.setText("Suicide, cannot place there");
 		}
-		return false;
 	}
-	
+
 	private void updateGroups2() {
 		//Here we need find and set all the groups then we can check the groups' liberties when we do the checkLiberties function
 		int GPnum=0;
@@ -252,43 +161,163 @@ public class BoardLogic {//Make logic function here
 		}
 
 	}
-	public void addStone2(int row, int col) {
-		Color c;
-		if(lastMove==1){
-			c= Color.BLACK;
-		}
-		else
-			c=Color.WHITE;
-		Stone stone=new Stone(row,col,c);
-		stone.setNumber(current);
-		board[row][col]=stone;
-		if(c==Color.BLACK){
-			StartFrame.display.setText("Last Move: Black at "+(row+1)+","+(col+1));
+	public boolean checkLiberties2(Stone stone){
+		//After adding a stone on the board, we need recalculate all group's liberty
+		//if one group's liberties is 0, move all stones in this group out of board
+		boolean dele= false;
+		int GPNum = 0;
+		for (int i = 0; i < groups.size(); i++) {
+			boolean dead = true;
+			//System.out.println("Group's num"+groups.get(i).getGroupNum());
+			//System.out.println("Stone's Group's num"+board[stone.getRow()][stone.getCol()].getGroup().getGroupNum());
+			if(groups.get(i).getGroupNum()==board[stone.getRow()][stone.getCol()].getGroup().getGroupNum()){
+				GPNum=i;
+				//System.out.println("My gp num is"+GPNum);
+				continue;
 			}
-		else{
-			StartFrame.display.setText("Last Move: WHITE at "+(row+1)+","+(col+1));
+			for (int j = 0; j < groups.get(i).size(); j++) {
+				if (groups.get(i).get(j).getLiberties() != 0) {
+					dead = false;
+					break;
+				}
+			}
+			if (dead) {
+				for (int j = 0; j < groups.get(i).size(); j++) {
+					board[groups.get(i).get(j).getRow()][groups.get(i).get(j).getCol()] = null;
+				}
+				dele= true;
+			}
 		}
-		board=snapShot(board);
-		groups.clear();
-		current++;
-		updateGroups2();
-		updateLiberties2();
-		boolean isSuicide=checkLiberties2(stone);
+		if(dele==false){
+			//System.out.println("No dele, check self");
+			//System.out.println("****");
+			for (int j = 0; j < groups.get(GPNum).size(); j++) {
+				if (groups.get(GPNum).get(j).getLiberties() != 0) {
+					return false;
+				}
+			}
+			for (int j = 0; j < groups.get(GPNum).size(); j++) {
+				board[groups.get(GPNum).get(j).getRow()][groups.get(GPNum).get(j).getCol()] = null;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public void clear(){
+		 for(int i=0;i<ROWS;i++){ 
+	    	    for(int j=0;j<COLS;j++){ 
+	    	    	board[i][j]=null;
+	    	    }
+		 }
+		 history.clear();
+		 history.add(snapShot(board));
+		 groups.clear();
+		 current=0;
+		 lastMove=1;
+	}
+	public void save() throws FileNotFoundException{
+		FileOutputStream fs = new FileOutputStream(new File("board.txt"));
+		System.out.println("Save File");
+		p = new PrintStream(fs);
+		p.println(lastMove);
+		for(int i=0;i<ROWS;i++){ 
+	    	    for(int j=0;j<COLS;j++){ 
+	    	    	if(board[i][j]==null){
+	    	    		p.print(0+" ");
+	    	    	}
+	    	    	else if(board[i][j].getColor()==Color.BLACK){
+	    	    		p.print(1+" ");
+	    	    	}
+	    	    	else{
+	    	    		p.print(-1+" ");
+	    	    	}
+	    	    }
+	    	    p.println();
+		 }
+	}
+	public void load() throws FileNotFoundException{
+		sc = new Scanner(new FileReader("board.txt"));
+		lastMove=sc.nextInt();
+   		System.out.println("Load File");
+   		int read=0;
+		for(int i=0;i<ROWS;i++){ 
+    	    for(int j=0;j<COLS;j++){
+    	    	read=sc.nextInt();
+    	    	if(read==0){
+    	    		board[i][j]=null;
+    	    	}
+    	    	else if(read==1){
+    	    		board[i][j]=new Stone(i,j,Color.BLACK);
+    	    	}
+    	    	else{
+    	    		board[i][j]=new Stone(i,j,Color.WHITE);
+    	    	}
+    	    }
+		}
+		history.clear();
 		history.add(snapShot(board));
-		//System.out.println("Group size:"+groups.size());
-	   // System.out.println("current is:"+current+"size is:"+history.size());
+		groups.clear();
+		current=0;
+	}
+
+	public boolean isTaken(int row, int col) {
+		return board[row][col]!=null;
+	}
+
+	public void undo(){
+		if(current<1){
+			return;
+		}
+		board = snapShot(history.get(history.size()-2));
+		history.remove(history.size()-1);
 		lastMove*=-1;
-		if(history.size()>2){
-			if(isEqual(history.get(history.size()-3))){
-				System.out.println("Ko rule, cannot place there");
-				undo();
-				StartFrame.display.setText("Ko rule, cannot place there");
+		current--;
+		StartFrame.display.setText("Undo");
+		//System.out.println("current is:"+current+"size is:"+history.size());
+	}
+	
+	public boolean isEqual(Stone[][] board){
+		for(int i=0;i<ROWS;i++){ 
+    	    for(int j=0;j<COLS;j++){
+    	    	if(this.board[i][j]==null){
+    	    		if(board[i][j]==null){
+    	    			continue;
+    	    		}
+    	    		else{
+    	    			//System.out.println("History is not null, now is null,i:"+i+" j: "+j);
+    	    			return false;
+    	    		}
+    	    	}
+    	    	else if(board[i][j]==null){
+    	    		//System.out.println("History is null, now is not null,i:"+i+" j: "+j);
+    	    		return false;
+    	    	}
+    	    	else if(this.board[i][j].getColor()!=board[i][j].getColor()){
+    	    		//System.out.println("History is one color, now is another");
+    	    		return false;
+    	    	}
+    	    }
+		}
+		return true;
+	}
+	
+	private Stone[][] snapShot(Stone[][] stones) { //Only copy the stone's color
+		
+		Stone[][] temp = new Stone[19][19];
+		
+		for (int i = 0; i < 19; i++) {
+			for (int j = 0; j < 19; j++) {
+				if(stones[i][j]==null){
+					temp[i][j]=null;
+				}
+				else{
+					temp[i][j]=Stone.copy(stones[i][j]);
+					temp[i][j].setGroup(null);
+				}
 			}
 		}
-		if(isSuicide){
-			undo();
-			StartFrame.display.setText("Suicide, cannot place there");
-		}
+		return temp;
 	}
 	
 	public void AiaddStone(){
@@ -340,38 +369,8 @@ public class BoardLogic {//Make logic function here
 		}
 	}
 	
-	public void undo(){
-		if(current<1){
-			return;
-		}
-		board = snapShot(history.get(history.size()-2));
-		history.remove(history.size()-1);
-		lastMove*=-1;
-		current--;
-		StartFrame.display.setText("Undo");
-		//System.out.println("current is:"+current+"size is:"+history.size());
-	}
-
-	private Stone[][] snapShot(Stone[][] stones) { //Only copy the stone's color
-		
-		Stone[][] temp = new Stone[19][19];
-		
-		for (int i = 0; i < 19; i++) {
-			for (int j = 0; j < 19; j++) {
-				if(stones[i][j]==null){
-					temp[i][j]=null;
-				}
-				else{
-					temp[i][j]=Stone.copy(stones[i][j]);
-					temp[i][j].setGroup(null);
-				}
-			}
-		}
-		return temp;
-	}
-}	
-
-/**	 This is the first method I used, but cannot fulfill the undo function
+}
+/**	This is the first method I used, but cannot fulfill the undo function
 *	So I totally used another method to do it.
 	public void addStone(int row, int col) {
 		

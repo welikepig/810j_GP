@@ -39,7 +39,7 @@ public class WelcomeFrame extends JFrame {
 			}
 		});
 		s.setBackground(Color.gray);
-		s.setForeground(Color.WHITE);
+		
 		
 		JPanel p1=new JPanel();
 		ImageIcon img = new ImageIcon(getClass().getResource("/image/weiqi.jpg"));
@@ -76,7 +76,11 @@ public class WelcomeFrame extends JFrame {
 }
 
 class BackgroundPanel extends JPanel  {  
-    Image im;  
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6L;
+	Image im;  
     public BackgroundPanel(Image im)  
     {  
         this.im=im;  

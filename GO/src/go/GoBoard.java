@@ -40,6 +40,8 @@ public class GoBoard extends JPanel{
 	}
 	public void pass(){
 		BLogic.lastMove*=-1;
+		if(Math.abs(mode)==1)
+        	BLogic.AiaddStone();
 	}
 	
 	public GoBoard(){
@@ -122,6 +124,7 @@ public class GoBoard extends JPanel{
     	   super.paintComponent(g);  
 	       Graphics2D g2 = (Graphics2D) g;
 	       setBack(g2);
+	       
 	       if(BLogic.lastMove==1){
 	    	   turn.setText("BLACK TURN");
 	       }

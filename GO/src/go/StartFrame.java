@@ -39,7 +39,7 @@ public static GoBoard goBoard = new GoBoard();
 	  Container contentPane=getContentPane();
 	  contentPane.add(goBoard);
 	  display = new JTextField("Choose mode,default is PVP");
-	  display.setFont(new Font("TimesRoman", Font.PLAIN, 18));
+	  display.setFont(new Font("TimesRoman", Font.PLAIN, 24));
 	  display.setEditable(false);
 	  contentPane.add(display,BorderLayout.NORTH);
       startMenu1 = new JMenu("Play with AI");
