@@ -33,15 +33,14 @@ public class BoardLogic {//Make logic function here
 	private Scanner sc;
 
 	    
-	public BoardLogic(){
+	public BoardLogic(){//Constructor, create new borad, set lastMove,current, Add origin board to history
 		board=new Stone[ROWS][COLS];
 		lastMove=1;
 		current=0;
 		history.add(snapShot(board));
-		//System.out.println("new grid");
 	}
 
-	public void addStone2(int row, int col) {
+	public void addStone2(int row, int col) {//Add a new Stone here, give row,col
 		Color c;
 		if(lastMove==1){
 			c= Color.BLACK;
@@ -67,7 +66,7 @@ public class BoardLogic {//Make logic function here
 		//System.out.println("Group size:"+groups.size());
 	   // System.out.println("current is:"+current+"size is:"+history.size());
 		lastMove*=-1;
-		if(history.size()>2){
+		if(history.size()>2){//If two board are same, then disobey Ko rule,call undo
 			if(isEqual(history.get(history.size()-3))){
 				System.out.println("Ko rule, cannot place there");
 				undo();
@@ -80,8 +79,19 @@ public class BoardLogic {//Make logic function here
 		}
 	}
 
+	public void undo(){//Undo the lastMove, Copy the last second in history, remove the last one
+		if(current<1){
+			return;
+		}
+		board = snapShot(history.get(history.size()-2));
+		history.remove(history.size()-1);
+		lastMove*=-1;
+		current--;
+		StartFrame.display.setText("Undo");
+	}
+
 	private void updateGroups2() {
-		//Here we need find and set all the groups then we can check the groups' liberties when we do the checkLiberties function
+		//Here we need find and set all the groups of single stone then we can check the groups' liberties when we do the checkLiberties function
 		int GPnum=0;
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLS; j++) {
@@ -98,7 +108,7 @@ public class BoardLogic {//Make logic function here
 				}
 				int i1;
 				int j1;
-				for ( i1 = -1; i1 <=1; i1++) {
+				for ( i1 = -1; i1 <=1; i1++) {//Find stone's neighbor
 					for ( j1 = -1; j1 <=1; j1++) {
 						if(Math.abs(i1)!=Math.abs(j1)){
 							if(i+i1<0||i+i1>18||j+j1<0||j+j1>18){
@@ -107,12 +117,11 @@ public class BoardLogic {//Make logic function here
 							if(board[i+i1][j+j1]==null){
 								continue;
 							}
-						
 							if (board[i][j].getColor() != board[i+i1][j+j1].getColor()){
 								//System.out.println("different color");
 								continue;
 							}
-							if(board[i+i1][j+j1].getGroup()==null){
+							if(board[i+i1][j+j1].getGroup()==null){//Add neighbor to group
 								board[i][j].getGroup().addStone(board[i+i1][j+j1]);
 							}
 							if (board[i][j].getGroup() != board[i+i1][j+j1].getGroup()) {
@@ -156,7 +165,6 @@ public class BoardLogic {//Make logic function here
 					board[i][j].setLiberties(board[i][j].getLiberties()-1);
 				}
 				//System.out.println("Row:"+i+"Cols:"+j+"  "+board[i][j].getLiberties());
-				//System.out.println("****");
 			}
 		}
 
@@ -204,7 +212,7 @@ public class BoardLogic {//Make logic function here
 		return false;
 	}
 
-	public void clear(){
+	public void clear(){//Set every stone on borad to be null, clear the arraylist and set lastmove,current
 		 for(int i=0;i<ROWS;i++){ 
 	    	    for(int j=0;j<COLS;j++){ 
 	    	    	board[i][j]=null;
@@ -216,10 +224,10 @@ public class BoardLogic {//Make logic function here
 		 current=0;
 		 lastMove=1;
 	}
-	public void save() throws FileNotFoundException{
+	public void save() throws FileNotFoundException{//Save the board while clikc the save button
 		FileOutputStream fs = new FileOutputStream(new File("board.txt"));
 		System.out.println("Save File");
-		p = new PrintStream(fs);
+		p = new PrintStream(fs);//Print important things in board.txt
 		p.println(lastMove);
 		for(int i=0;i<ROWS;i++){ 
 	    	    for(int j=0;j<COLS;j++){ 
@@ -236,9 +244,9 @@ public class BoardLogic {//Make logic function here
 	    	    p.println();
 		 }
 	}
-	public void load() throws FileNotFoundException{
+	public void load() throws FileNotFoundException{//Load the board we save
 		sc = new Scanner(new FileReader("board.txt"));
-		lastMove=sc.nextInt();
+		lastMove=sc.nextInt();//Read information in borad.txt
    		System.out.println("Load File");
    		int read=0;
 		for(int i=0;i<ROWS;i++){ 
@@ -261,23 +269,11 @@ public class BoardLogic {//Make logic function here
 		current=0;
 	}
 
-	public boolean isTaken(int row, int col) {
+	public boolean isTaken(int row, int col) {// Chekn if this point is been taken
 		return board[row][col]!=null;
 	}
-
-	public void undo(){
-		if(current<1){
-			return;
-		}
-		board = snapShot(history.get(history.size()-2));
-		history.remove(history.size()-1);
-		lastMove*=-1;
-		current--;
-		StartFrame.display.setText("Undo");
-		//System.out.println("current is:"+current+"size is:"+history.size());
-	}
 	
-	public boolean isEqual(Stone[][] board){
+	public boolean isEqual(Stone[][] board){//Compare the current board with given board, if same return true
 		for(int i=0;i<ROWS;i++){ 
     	    for(int j=0;j<COLS;j++){
     	    	if(this.board[i][j]==null){
@@ -285,16 +281,13 @@ public class BoardLogic {//Make logic function here
     	    			continue;
     	    		}
     	    		else{
-    	    			//System.out.println("History is not null, now is null,i:"+i+" j: "+j);
     	    			return false;
     	    		}
     	    	}
     	    	else if(board[i][j]==null){
-    	    		//System.out.println("History is null, now is not null,i:"+i+" j: "+j);
     	    		return false;
     	    	}
     	    	else if(this.board[i][j].getColor()!=board[i][j].getColor()){
-    	    		//System.out.println("History is one color, now is another");
     	    		return false;
     	    	}
     	    }
@@ -302,7 +295,7 @@ public class BoardLogic {//Make logic function here
 		return true;
 	}
 	
-	private Stone[][] snapShot(Stone[][] stones) { //Only copy the stone's color
+	private Stone[][] snapShot(Stone[][] stones) { //Only copy the stone's color, rol and column
 		
 		Stone[][] temp = new Stone[19][19];
 		
@@ -319,8 +312,9 @@ public class BoardLogic {//Make logic function here
 		}
 		return temp;
 	}
-	
+
 	public void AiaddStone(){
+	//Use the same algorithm in addstone, just choose two legal row and col to place stone
 		boolean take=true;
 		int airow=0;
 		int aicol=0;
@@ -369,9 +363,8 @@ public class BoardLogic {//Make logic function here
 		}
 	}
 	
-}
 /**	This is the first method I used, but cannot fulfill the undo function
-*	So I totally used another method to do it.
+*	So I totally used another method to do it, And I comment them out.
 	public void addStone(int row, int col) {
 		
 		Color c;

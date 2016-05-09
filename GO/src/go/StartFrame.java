@@ -26,7 +26,8 @@ public static GoBoard goBoard = new GoBoard();
   public static JMenuItem item1,item2,item3;  
 
 
-  public StartFrame(){  
+  public StartFrame(){
+  //We put some JMenus,JButtons,add actionlistener and Crate new GoBoard
       setTitle("GO/WEIQI");
       menuBar =new JMenuBar();
       menuBar.setBackground(new Color(88,161,176));
@@ -49,14 +50,14 @@ public static GoBoard goBoard = new GoBoard();
       startMenu1.add(item1);
       startMenu1.add(item2);
     //  startMenu2.add(item3);
-      item3.addActionListener(new ActionListener(){
+      item3.addActionListener(new ActionListener(){//PVP mode
     	  public void actionPerformed(ActionEvent e) {
     		  goBoard.clear();
     		  goBoard.setMode(0);
     		  display.setText("Two people Play");  
     	  }
       });
-      item1.addActionListener(new ActionListener(){
+      item1.addActionListener(new ActionListener(){//AI,start with black
     	  public void actionPerformed(ActionEvent e) {
     		  goBoard.clear();
     		  goBoard.setMode(-1);
@@ -64,7 +65,7 @@ public static GoBoard goBoard = new GoBoard();
 
     	  }
       });
-      item2.addActionListener(new ActionListener(){
+      item2.addActionListener(new ActionListener(){//AI, start with white
     	  public void actionPerformed(ActionEvent e) {
     		  goBoard.clear();
     		  goBoard.setMode(1);
@@ -86,7 +87,7 @@ public static GoBoard goBoard = new GoBoard();
       backButton=new JButton("UNDO");
      
       
-      startButton.addActionListener(new ActionListener(){
+      startButton.addActionListener(new ActionListener(){//Restart button
     	  public void actionPerformed(ActionEvent e) {
     		  goBoard.clear();
     		  display.setText("Restart");
@@ -94,20 +95,20 @@ public static GoBoard goBoard = new GoBoard();
     	  }
       });
       exitButton=new JButton("QUIT"); 
-      exitButton.addActionListener(new ActionListener(){
+      exitButton.addActionListener(new ActionListener(){//Quit button
     	  public void actionPerformed(ActionEvent e) {
     		 System.exit(0);
     	  }
       });
       backButton=new JButton("UNDO");  
-      backButton.addActionListener(new ActionListener(){
+      backButton.addActionListener(new ActionListener(){//Undo button
     	  public void actionPerformed(ActionEvent e) {
     		  goBoard.undo();
     		  display.setText("Undo");
     	  }
       });
       saveButton = new JButton("SAVE");
-      saveButton.addActionListener(new ActionListener(){
+      saveButton.addActionListener(new ActionListener(){//Save button
     	  public void actionPerformed(ActionEvent e) {
     		  try {
 				goBoard.save();
@@ -119,7 +120,7 @@ public static GoBoard goBoard = new GoBoard();
     	  }
       });
       loadButton = new JButton("LOAD");
-      loadButton.addActionListener(new ActionListener(){
+      loadButton.addActionListener(new ActionListener(){//Load button
     	  public void actionPerformed(ActionEvent e) {
     		  try {
 				goBoard.load();
@@ -131,7 +132,7 @@ public static GoBoard goBoard = new GoBoard();
     	  }
       });
       passButton=new JButton("PASS");
-      passButton.addActionListener(new ActionListener(){
+      passButton.addActionListener(new ActionListener(){//Pass button
     	  public void actionPerformed(ActionEvent e) {
     		  goBoard.pass();
     		  display.setText("Pass");

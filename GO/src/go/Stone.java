@@ -10,7 +10,7 @@ import java.awt.Color;
 
 
 public class Stone
-{
+{//This class stands for a single stone, it contains the row,col,color,group and liberties
 	private int row;
 	private int col;
 	private int Liberties;
@@ -24,7 +24,7 @@ public class Stone
     	Liberties=calcuLiberty();
     	this.c=c;
     }
-    
+    //Since all the data member in this class is private, we use a lot of set and get function
 	public Group getGroup(){
 		return group;
 	}
@@ -51,7 +51,7 @@ public class Stone
 		this.group = group;
 	}
     
-    public static Stone copy(Stone stone){
+    public static Stone copy(Stone stone){//This function is to copy a stone's row,col and color
     	Stone temp=new Stone(stone.row,stone.col,stone.c);
     	return temp;
     }

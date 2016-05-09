@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import javax.swing.*;
 
 public class GoBoard extends JPanel{
+//This class add the mouseListener and paint the graph(backgroud and stone)
 	/**
 	 * 
 	 */
@@ -28,45 +29,42 @@ public class GoBoard extends JPanel{
 	private int mode;
 
 	
-	public void setMode(int n){
+	public void setMode(int n){//set the play mode
 		mode=n;
 	}
 	
 	public int getMode(){
 		return mode;
 	}
-	public void AiFirstStep(){
+	public void AiFirstStep(){//Let AI move first
 		BLogic.AiaddStone();	
 	}
-	public void pass(){
+	public void pass(){//Change the lastMove in Boardlogic
 		BLogic.lastMove*=-1;
 		if(Math.abs(mode)==1)
         	BLogic.AiaddStone();
 	}
 	
-	public GoBoard(){
+	public GoBoard(){//Constructor create the BoardLogic and add mouseListener
 		BLogic=new BoardLogic();
 		turn =new JLabel();
 		add(turn,BorderLayout.NORTH);
 		addMouseListener(
 				new MouseAdapter() {
 					@Override
-					public void mouseReleased(MouseEvent e) {
+					public void mouseReleased(MouseEvent e) {//Find the row and col, add a stone when mouse relase
 						int row = Math.round((float) (e.getY() - GRID_SPAN)
 			                    / GRID_SPAN);
 			            int col = Math.round((float) (e.getX() - GRID_SPAN)
 			                    /GRID_SPAN);
 
-			            // DEBUG INFO
-			           
 			            if (row >= ROWS || col >= COLS || row < 0 || col < 0) {
 			                return;
 			            }
 			            
-			            if (BLogic.isTaken(row, col)) {
+			            if (BLogic.isTaken(row, col)) {//Check if the place is already taken
 			   
 			            	StartFrame.display.setText("This place is Already taken!!");
-			            	
 			            	System.out.println("This place is Already taken!!");
 			                return;
 			            }
@@ -84,24 +82,24 @@ public class GoBoard extends JPanel{
 	   	   
     }
 	
-	public void clear(){
+	public void clear(){//Call clear in Boradlogic
 		BLogic.clear();
 	}
-	public void undo(){
+	public void undo(){//Call undo in Boradlogic
 		BLogic.undo();
 		if(Math.abs(mode)==1)
 			BLogic.undo();
 		//repaint();
 	}
-	public void save() throws FileNotFoundException{
+	public void save() throws FileNotFoundException{//Call save in Boradlogic
 		BLogic.save();
 	}
-	public void load() throws FileNotFoundException{
+	public void load() throws FileNotFoundException{//Call load in Boradlogic
 		BLogic.load();
 		paintComponent(getGraphics());
 	}
 	
-	public void setBack(Graphics2D g2){	
+	public void setBack(Graphics2D g2){	//Set the backgroud of a Go board
 		setBackground(Color.WHITE);
 			for(int i=0;i<ROWS;i++){ 
 	            g2.drawLine(MARGIN, MARGIN+i*GRID_SPAN, MARGIN+(COLS-1)*GRID_SPAN, MARGIN+i*GRID_SPAN);
@@ -120,7 +118,7 @@ public class GoBoard extends JPanel{
 		
 	}
 	
-    public void paintComponent(Graphics g){  
+    public void paintComponent(Graphics g){ //Paint the background and the stone on JPanel
     	   super.paintComponent(g);  
 	       Graphics2D g2 = (Graphics2D) g;
 	       setBack(g2);

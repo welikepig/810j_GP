@@ -11,12 +11,14 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 public class Group {
+//This class stands for a group contains the color groupNum and arraylist of stone
 	private ArrayList<Stone> stones;
 	private Color c;
 	public int GroupNum;
 	public Group(){
 
 	}
+	//We create set and get function for private data
 	public int getGroupNum(){
 		return GroupNum;
 	}
@@ -45,15 +47,16 @@ public class Group {
 	    }
 	    return total;
 	}
-	public void addStone(Stone one) {
+	public void addStone(Stone one) {//Add a stone in this group
 	    one.setGroup(this);
 	    stones.add(one);
 	    //System.out.println(getStones().size());
 	}
-	public void remove(Stone one){
+	public void remove(Stone one){//Remove one stone is arraylist
 		stones.remove(one);
 	}
 	public void mergeTwoGroup(Group g){
+	//This function would set all stones' group in Group g to be current group
 		for(int i=0;i<g.size();i++){
 			addStone(g.get(i));
 		}

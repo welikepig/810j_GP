@@ -13,7 +13,7 @@ public class WelcomeFrame extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public WelcomeFrame(){
+	public WelcomeFrame(){//We put a welcome image and a JButton to jump to another JFrame
 		Container c=getContentPane();
 
 		
